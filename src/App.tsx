@@ -1,7 +1,5 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import AirportSearch from './config/AirportSearch/AirportSearch';
+import AirportSearch from './components/AirportSearch/AirportSearch';
 
 function App() {
   return (
