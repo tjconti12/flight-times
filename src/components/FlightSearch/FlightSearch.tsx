@@ -2,11 +2,11 @@ import React, { ChangeEventHandler, useState, useEffect, KeyboardEventHandler } 
 import axios from 'axios';
 import databaseUrl from '../../config/config';
 import IAirports from '../../models/models';
-import './AirportSearch.css';
+import './FlightSearch.css';
 import AutoComplete from '../AutoComplete/AutoComplete';
 
 
-const AirportSearch = () => {
+const FlightSearch = () => {
 
   const [chosenAirport, setChosenAirport] = useState<IAirports | {}>({});
   const [chosenAirline, setChosenAirline] = useState({});
@@ -27,4 +27,4 @@ const AirportSearch = () => {
   )
 }
 
-export default AirportSearch
+export default FlightSearch

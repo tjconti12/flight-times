@@ -20,7 +20,7 @@ const AutoComplete = ({category, stateSetter}: AutoCompleteProps) => {
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     event.target.value.length === 0 ? setShowSuggestions(false) : setShowSuggestions(true);
     setSearchString(event.target.value);
-    axios.get(`${databaseUrl}/${category}?search=${searchString}`)
+    axios.get(`${databaseUrl}/${category}/?search=${searchString}`)
       .then(res => {
         setAutoCompleteResults(res.data)
       })

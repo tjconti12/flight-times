@@ -1,5 +1,5 @@
 import './App.css';
-import AirportSearch from './components/AirportSearch/AirportSearch';
+import AirportSearch from './components/FlightSearch/FlightSearch';
 
 function App() {
   return (
