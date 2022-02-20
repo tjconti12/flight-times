@@ -1,11 +1,15 @@
+import { useState } from 'react';
+import { IFlight } from './models/models';
 import './App.css';
-import AirportSearch from './components/FlightSearch/FlightSearch';
+import FlightSearch from './components/FlightSearch/FlightSearch';
 
 function App() {
+  const [foundFlights, setFoundFlights] = useState<IFlight[] | []>([]);
+
   return (
     <div>
       <h1>Flight Times</h1>
-      <AirportSearch />
+      <FlightSearch setFoundFlights={setFoundFlights}/>
     </div>
   );
 }

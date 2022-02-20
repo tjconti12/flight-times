@@ -1,15 +1,18 @@
 import React, { ChangeEventHandler, useState, KeyboardEventHandler } from 'react';
 import axios from 'axios';
 import databaseUrl from '../../config/config';
-import IAirports from '../../models/models';
+import { IAirports, IAirline, ISearch } from '../../models/models';
 import './AutoComplete.css';
 
 type AutoCompleteProps = {
     category: string;
-    stateSetter: any;
+    stateSetter: React.Dispatch<React.SetStateAction<ISearch>>;
+    currentState: ISearch;
+    field: string;
 }
+
 // AutoCompleteResults, HandleChange
-const AutoComplete = ({category, stateSetter}: AutoCompleteProps) => {
+const AutoComplete = ({category, stateSetter, currentState, field}: AutoCompleteProps) => {
 
   const [searchString, setSearchString] = useState("");
   const [autoCompleteResults, setAutoCompleteResults] = useState<IAirports[] | []>([]);
@@ -20,7 +23,7 @@ const AutoComplete = ({category, stateSetter}: AutoCompleteProps) => {
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     event.target.value.length === 0 ? setShowSuggestions(false) : setShowSuggestions(true);
     setSearchString(event.target.value);
-    axios.get(`${databaseUrl}/${category}/?search=${searchString}`)
+    axios.get(`${databaseUrl}/${category}s/?search=${searchString}`)
       .then(res => {
         setAutoCompleteResults(res.data)
       })
@@ -31,8 +34,9 @@ const AutoComplete = ({category, stateSetter}: AutoCompleteProps) => {
     setShowSuggestions(false);
     // setAutoCompleteResults([]);
     setSearchString(event.currentTarget.innerText);
-    let toSet = autoCompleteResults.filter(airport => airport.name === event.currentTarget.innerText);
-    stateSetter(toSet);
+    let toSet = autoCompleteResults.filter((airport: IAirline | IAirports) => airport.name === event.currentTarget.innerText);
+    const copyOfState = {...currentState};
+    stateSetter({...copyOfState, [field]: toSet[0]});
   }
 
   // To cycle through suggestions
@@ -48,8 +52,9 @@ const AutoComplete = ({category, stateSetter}: AutoCompleteProps) => {
       setSearchString(autoCompleteResults[activeIndex].name);
       setShowSuggestions(false);
       setActiveIndex(0);
+      const copyOfState = {...currentState};
+      stateSetter({...copyOfState, [field]: autoCompleteResults[activeIndex]});
       setAutoCompleteResults([]);
-      stateSetter(autoCompleteResults[activeIndex]);
     }
   }
 
