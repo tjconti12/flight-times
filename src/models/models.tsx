@@ -16,7 +16,8 @@ export interface ISearch {
     arrAirport: IAirports,
     depAirport: IAirports,
     airline: IAirline,
-    time: string
+    time: string,
+    date: string
 
 }
 

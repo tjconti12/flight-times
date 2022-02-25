@@ -7,9 +7,10 @@ import AutoComplete from '../AutoComplete/AutoComplete';
 
 type FlightSearchProps = {
   setFoundFlights: React.Dispatch<React.SetStateAction<IFlight[]>>;
+  setSearched: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FlightSearch = ({ setFoundFlights }: FlightSearchProps) => {
+const FlightSearch = ({ setFoundFlights, setSearched }: FlightSearchProps) => {
 
   const [searchFields, setSearchFields] = useState<ISearch>({
     arrAirport: {
@@ -31,7 +32,8 @@ const FlightSearch = ({ setFoundFlights }: FlightSearchProps) => {
       name: "",
       icao_code: ""
     },
-    time: ""
+    time: "",
+    date: new Date().toISOString().slice(0, 10)
   })
 
 
@@ -41,12 +43,12 @@ const FlightSearch = ({ setFoundFlights }: FlightSearchProps) => {
   }
 
   const fetchFlightData = () => {
-    axios.get(`https://airlabs.co/api/v9/schedules?api_key=${process.env.REACT_APP_API}&airline_icao=${searchFields.airline.icao_code}&arr_icao=${searchFields.arrAirport.code}&dep_icao=${searchFields.depAirport.code}`)
+    axios.get(`http://api.aviationstack.com/v1/flights?access_key=${process.env.REACT_APP_API}&flight_date=${searchFields.date}&airline_icao=${searchFields.airline.icao_code}&arr_icao=${searchFields.arrAirport.code}&dep_icao=${searchFields.depAirport.code}`)
       .then(res => {
-        console.log(res.data.response);
-        console.log(res.data.response[0].arr_time.split(" ")[1]);
-        const filteredFlight: IFlight[] = res.data.response.filter((flight: IFlight) => {
-          const time = flight.arr_time.split(" ")[1].split(":");
+        console.log(res);
+        
+        const filteredFlight = res.data.response.filter((flight: any) => {
+          const time = flight.arrival.scheduled.split("T")[1].split(":");
           const totalMins = (+time[0] * 60) + (+time[1]);
           
           const searchTime = searchFields.time.split(":");
@@ -56,10 +58,13 @@ const FlightSearch = ({ setFoundFlights }: FlightSearchProps) => {
           return totalMins > searchMins - 30 && totalMins < searchMins + 30;
         })
         // filtered flight is an array of one or maybe more flights found
+        console.log(filteredFlight);
         setFoundFlights(filteredFlight);
+        setSearched(true);
       })
       .catch(err => {
         console.log(err);
+        setSearched(true);
       })
   }
 
